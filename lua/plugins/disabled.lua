@@ -1,3 +1,3 @@
 return {
-  --  { "ahmedkhalf/project.nvim", enabled = false },
+  { "ahmedkhalf/project.nvim", enabled = false },
 }
