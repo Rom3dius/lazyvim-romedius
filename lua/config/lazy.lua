@@ -51,29 +51,3 @@ require("lazy").setup({
     },
   },
 })
-
-local lsp_override_dir = vim.fn.stdpath("config") .. "/lua/lsp"
-local luv = vim.loop
-
-local function load_lsp_overrides(dir)
-  local fd = luv.fs_scandir(dir)
-  if not fd then
-    return
-  end
-  while true do
-    local name, type = luv.fs_scandir_next(fd)
-    if not name then
-      break
-    end
-    if type == "file" and name:sub(-4) == ".lua" then
-      -- Construct the module name. For example, "pyright.lua" becomes "lsp.pyright".
-      local module_name = "lsp." .. name:sub(1, -5)
-      local ok, err = pcall(require, module_name)
-      if not ok then
-        vim.api.nvim_notify("Error loading " .. module_name .. ": " .. err, vim.log.levels.ERROR, {})
-      end
-    end
-  end
-end
-
-load_lsp_overrides(lsp_override_dir)
