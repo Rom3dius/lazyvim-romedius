@@ -46,53 +46,20 @@ return {
 
 ```lua
 return {
-	-- LSP Config with mason and mason-lspconfig
 	{
 		"neovim/nvim-lspconfig",
-		dependencies = {
-			"williamboman/mason.nvim",
-			"williamboman/mason-lspconfig.nvim",
-			"pmizio/typescript-tools.nvim", -- For vtsls (alternative: "yioneko/nvim-vtsls")
-		},
 		config = function()
 			require("mason").setup()
 			require("mason-lspconfig").setup()
 
 			local lspconfig = require("lspconfig")
 
-			-- Setup VTSLS for ts/js in monorepo
-			lspconfig.vtsls.setup({
-				settings = {
-					vtsls = {
-						enableMoveToFileCodeAction = true,
-						experimental = {
-							completion = {
-								enableServerSideFuzzyMatch = true,
-							},
-						},
-					},
-					typescript = {
-						inlayHints = {
-							enumMemberValues = true,
-							includeInlayParameterNameHints = "all",
-						},
-					},
-				},
-				root_dir = lspconfig.util.root_pattern("pnpm-workspace.yaml", "package.json", "tsconfig.base.json"),
-			})
-
-			-- Setup ESLint
-			lspconfig.eslint.setup({
-				root_dir = lspconfig.util.root_pattern(
-					".eslintrc.js",
-					".eslintrc.json",
-					"package.json",
-					"pnpm-workspace.yaml"
-				),
-				settings = {
-					format = { enable = true },
-					lintTask = { enable = true },
-				},
+			lspconfig.ansiblels.setup({
+				root_dir = lspconfig.util.root_pattern(".ansible-lint", "ansible.cfg"),
+				on_attach = function(client, bufnr)
+					client.server_capabilities.documentFormattingProvider = false
+					client.server_capabilities.documentRangeFormattingProvider = false
+				end,
 			})
 		end,
 	},
