@@ -8,6 +8,14 @@ return {
     pyright = {
       filetypes = { "python" },
       root_dir = util.root_pattern(".git", "pyproject.toml", "setup.py"),
+      settings = {
+        python = {
+          analysis = {
+            typeCheckingMode = "basic",
+            diagnosticMode = "workspace",
+          },
+        },
+      },
     },
   },
 
