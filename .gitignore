@@ -6,3 +6,7 @@ debug
 foo.*
 *.log
 data
+# secret management
+.secrets.baseline
+.env
+*.local
