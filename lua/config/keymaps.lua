@@ -15,7 +15,7 @@ map("n", "<leader>fw", function()
       "~/src",
       "~/dev",
     },
-    oneoff_directories = { "~/.config/nvim", "~/.config/hypr" },
+    oneoff_directories = { "~/.config/nvim", "~/.config/hypr", "~/zettelkasten" },
     auto_file_explorer = false,
   })
 end, { desc = "Search for a project" })

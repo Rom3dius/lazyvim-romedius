@@ -7,7 +7,7 @@ return {
           "~/zettelkasten",
         },
         rclone_remote = "box-romedius",
-        remote_subdir = "NvimNotes",
+        remote_root = "NvimNotes",
       })
     end,
   },
