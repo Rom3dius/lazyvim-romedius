@@ -6,6 +6,7 @@ debug
 foo.*
 *.log
 data
+lazy-lock.json
 # secret management
 .secrets.baseline
 .env
