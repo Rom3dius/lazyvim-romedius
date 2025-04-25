@@ -3,20 +3,24 @@ return {
     "renerocksai/telekasten.nvim",
     requires = { "nvim-telescope/telescope.nvim" },
     config = function()
+      local base = vim.fn.expand("~/zettelkasten")
       require("telekasten").setup({
-        home = vim.fn.expand("~/zettelkasten"),
-        dailies = vim.fn.expand("~/zettelkasten/dailies"),
-        weeklies = vim.fn.expand("~/zettelkasten/weeklies"),
-        templates = vim.fn.expand("~/zettelkasten/templates"),
-        -- image_subdir = "img",
+        home = base .. "/personal",
+        dailies = base .. "/dailies",
+        weeklies = base .. "/weeklies",
+        templates = base .. "/templates",
+        template_new_note = base .. "/templates/default.md",
+        template_new_daily = base .. "/templates/daily.md",
+        template_new_weekly = base .. "/templates/weekly.md",
+        image_subdir = "img",
         sort = "modified",
         command_palette_theme = "dropdown",
         vaults = {
-          personal = {
-            home = vim.fn.expand("~/zettelkasten/personal"),
-          },
           c1 = {
-            home = vim.fn.expand("~/zettelkasten/c1"),
+            home = base .. "/c1",
+            dailies = base .. "/dailies",
+            weeklies = base .. "/weeklies",
+            templates = base .. "/templates",
           },
         },
       })
