@@ -13,6 +13,7 @@ map("n", "<leader>fw", function()
   w({
     directories = {
       "~/src",
+      "~/work",
       "~/dev",
     },
     oneoff_directories = { "~/.config/nvim", "~/.config/hypr", "~/zettelkasten" },
