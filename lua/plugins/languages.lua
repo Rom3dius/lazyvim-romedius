@@ -14,10 +14,23 @@ return {
 
   -- 2) Tell Mason‑LSPconfig to install those LSPs
   {
-    "williamboman/mason-lspconfig.nvim",
+    "mason-org/mason-lspconfig.nvim",
     opts = function(_, opts)
       opts.ensure_installed = opts.ensure_installed or {}
-      vim.list_extend(opts.ensure_installed, langs.mason_lsp)
+
+      -- Only install servers available in mason's registry
+      local mlsp = require("mason-lspconfig")
+      local available = mlsp.get_available_servers()
+
+      for _, srv in ipairs(langs.mason_lsp) do
+        if vim.tbl_contains(available, srv) then
+          table.insert(opts.ensure_installed, srv)
+        else
+          vim.schedule(function()
+            vim.notify("Skipping unknown LSP server: " .. srv, vim.log.levels.WARN)
+          end)
+        end
+      end
     end,
   },
 
@@ -26,8 +39,8 @@ return {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     opts = {
       ensure_installed = langs.mason_tools,
-      run_on_start     = true,
-      auto_update      = false,
+      run_on_start = true,
+      auto_update = false,
     },
   },
 
@@ -36,8 +49,7 @@ return {
     "stevearc/conform.nvim",
     opts = function(_, opts)
       opts.formatters_by_ft = vim.tbl_deep_extend("force", opts.formatters_by_ft or {}, langs.formatters_by_ft)
-      opts.formatters       = vim.tbl_deep_extend("force", opts.formatters       or {}, langs.formatters_config)
+      opts.formatters = vim.tbl_deep_extend("force", opts.formatters or {}, langs.formatters_config)
     end,
   },
 }
-
