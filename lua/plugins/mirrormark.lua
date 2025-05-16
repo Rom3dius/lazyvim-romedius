@@ -1,6 +1,7 @@
 return {
   {
     "Rom3dius/mirrormark",
+    enabled = false,
     config = function()
       require("mirrormark").setup({
         folders = {
