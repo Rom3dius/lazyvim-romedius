@@ -21,6 +21,12 @@ return {
             dailies = base .. "/dailies",
             weeklies = base .. "/weeklies",
             templates = base .. "/templates",
+            template_new_note = base .. "/templates/default.md",
+            template_new_daily = base .. "/templates/daily.md",
+            template_new_weekly = base .. "/templates/weekly.md",
+            image_subdir = "img",
+            sort = "modified",
+            command_palette_theme = "dropdown",
           },
         },
       })
