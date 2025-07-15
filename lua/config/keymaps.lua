@@ -43,3 +43,7 @@ map("n", "<leader>zb", "<cmd>Telekasten show_backlinks<CR>", { desc = "Backlinks
 map("n", "<leader>zI", "<cmd>Telekasten insert_img_link<CR>", { desc = "Insert Image Link" })
 map("n", "<leader>zl", "<cmd>Telekasten insert_link<CR>", { desc = "Insert Link" })
 map("i", "[[", "<cmd>Telekasten insert_link<CR>", { desc = "Insert Link" })
+
+-- fold and unfold
+map("n", "<leader>uo", "zo", { desc = "Open fold under cursor" })
+map("n", "<leader>uc", "zc", { desc = "Close fold under cursor" })
