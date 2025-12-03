@@ -9,16 +9,26 @@ return {
       root_dir = util.root_pattern("Cargo.toml"),
       settings = {
         ["rust-analyzer"] = {
+          -- keep this as you like
           diagnostics = {
-            enable = false,
+            enable = false, -- or true if you want RA diagnostics
           },
           procMacro = {
-            ignored = {
-              leptos_macro = {
-                "component",
-                "server",
-              },
-            },
+            enable = true,
+            -- remove the 'ignored' block entirely, or leave it empty:
+            ignored = {},
+          },
+          cargo = {
+            -- choose the set that matches your project:
+            features = "all",
+          },
+          checkOnSave = {
+            command = "clippy", -- or "check"
+            allTargets = false, -- avoid spurious target errors
+            -- extraArgs = { "--target-dir", "target/ra" }, -- optional perf isolation
+          },
+          rustfmt = {
+            overrideCommand = { "leptosfmt", "--stdin", "--rustfmt" },
           },
         },
       },
@@ -26,15 +36,12 @@ return {
   },
 
   -- Always format Rust with rustfmt
-  formatters_by_ft = {
-    rust = { "rustfmt" },
-  },
+  -- formatters_by_ft = {
+  --   rust = { "rustfmt" },
+  -- },
 
   formatters_config = {},
 
-  -- Mason packages to ensure are installed:
-  --   - rust_analyzer (the language server)
-  --   - rustfmt       (the formatter)
   mason_lsp = { "rust_analyzer" },
   mason_tools = { "rustfmt" },
 }
