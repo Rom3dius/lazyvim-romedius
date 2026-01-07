@@ -5,12 +5,71 @@ return {
   version = false,
   enabled = false,
   opts = {
-    provider = "ollama",
+    provider = "routellm",
 
-    ollama = {
-      model = "deepseek-r1:14b",
+    providers = {
+      ---@type AvanteProvider
+      routellm = {
+        endpoint = "https://routellm.abacus.ai/v1/chat/completions",
+        model = "route-llm", -- This won't get prefixed since we control parse_curl_args
+        api_key_name = "ROUTELLM_API_KEY",
+
+        parse_curl_args = function(opts, code_opts)
+          local api_key = os.getenv(opts.api_key_name)
+          if not api_key then
+            error("API key not found in environment variable: " .. opts.api_key_name)
+          end
+
+          return {
+            url = opts.endpoint,
+            headers = {
+              ["Authorization"] = "Bearer " .. api_key,
+              ["Content-Type"] = "application/json",
+            },
+            body = {
+              model = "route-llm",
+              messages = code_opts.messages or {
+                {
+                  role = "user",
+                  content = code_opts.question,
+                },
+              },
+              stream = true,
+            },
+          }
+        end,
+
+        parse_response = function(data_stream, event_state, opts)
+          -- Handle SSE format: "data: {...}"
+          if data_stream:match("^data: ") then
+            local json_str = data_stream:sub(7) -- Remove "data: " prefix
+
+            if json_str == "[DONE]" then
+              opts.on_complete(nil)
+              return
+            end
+
+            local ok, json_data = pcall(vim.json.decode, json_str)
+            if not ok then
+              return -- Skip malformed JSON
+            end
+
+            -- Extract content from OpenAI-style response
+            if json_data.choices and json_data.choices[1] then
+              local delta = json_data.choices[1].delta
+              if delta and delta.content then
+                opts.on_chunk(delta.content)
+              end
+
+              -- Check if stream is finished
+              if json_data.choices[1].finish_reason then
+                opts.on_complete(nil)
+              end
+            end
+          end
+        end,
+      },
     },
-
     behaviour = {
       auto_suggestions = false,
       auto_suggestions_respect_ignore = false,
@@ -74,37 +133,8 @@ return {
   build = "make",
   -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
   dependencies = {
-    "nvim-treesitter/nvim-treesitter",
-    "stevearc/dressing.nvim",
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
-    --- The below dependencies are optional,
-    "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-    {
-      -- support for image pasting
-      "HakonHarnes/img-clip.nvim",
-      event = "VeryLazy",
-      opts = {
-        -- recommended settings
-        default = {
-          embed_image_as_base64 = false,
-          prompt_for_file_name = false,
-          drag_and_drop = {
-            insert_mode = true,
-          },
-          -- required for Windows users
-          use_absolute_path = true,
-        },
-      },
-    },
-    {
-      -- Make sure to set this up properly if you have lazy=true
-      "MeanderingProgrammer/render-markdown.nvim",
-      opts = {
-        file_types = { "markdown", "Avante" },
-      },
-      ft = { "markdown", "Avante" },
-    },
   },
   keys = {
     {

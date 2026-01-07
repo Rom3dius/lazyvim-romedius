@@ -8,7 +8,16 @@ return {
       require("auto-save").setup({
         condition = function(buf)
           local ft = vim.bo[buf].filetype
-          return ft ~= "octo"
+          if ft == "octo" then
+            return false
+          end
+
+          -- Exclude Claude Code diff buffers
+          if vim.b[buf].claudecode_diff_tab_name then
+            return false
+          end
+
+          return true
         end,
       })
     end,
